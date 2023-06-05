@@ -21,13 +21,19 @@ extern "C" {
 /* Dependencies */
 typedef enum E2SM_RC_ControlMessage_PR {
 	E2SM_RC_ControlMessage_PR_NOTHING,	/* No components present */
-	E2SM_RC_ControlMessage_PR_controlMessage_Format1
+	E2SM_RC_ControlMessage_PR_controlMessage_Format1,
 	/* Extensions may appear below */
+	// modified
+	E2SM_RC_ControlMessage_PR_handoverMessage_Format
+	// end modification
 	
 } E2SM_RC_ControlMessage_PR;
 
 /* Forward declarations */
 struct E2SM_RC_ControlMessage_Format1;
+// modified
+struct AllHandoversListPlmn;
+// end modification
 
 /* E2SM-RC-ControlMessage */
 typedef struct E2SM_RC_ControlMessage {
@@ -38,6 +44,9 @@ typedef struct E2SM_RC_ControlMessage {
 		 * This type is extensible,
 		 * possible extensions are below.
 		 */
+		// modified
+		struct AllHandoversListPlmn *handoverMessage_Format;
+		// end modification
 	} choice;
 	
 	/* Context for parsing across buffer boundaries */
@@ -46,6 +55,11 @@ typedef struct E2SM_RC_ControlMessage {
 
 /* Implementation */
 extern asn_TYPE_descriptor_t asn_DEF_E2SM_RC_ControlMessage;
+// modified
+// extern asn_CHOICE_specifics_t asn_SPC_E2SM_RC_ControlMessage_specs_1;
+// extern asn_TYPE_member_t asn_MBR_E2SM_RC_ControlMessage_1[2];
+// extern asn_per_constraints_t asn_PER_type_E2SM_RC_ControlMessage_constr_1;
+// end modification
 
 #ifdef __cplusplus
 }

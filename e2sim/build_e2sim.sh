@@ -19,8 +19,8 @@ fi
 
 # build
 cd build || (echo "build folder does not exist, the script will create it" && mkdir build && cd build)
-cmake .. -DDEV_PKG=1 -DLOG_LEVEL=${log_level}
-make package
+sudo cmake .. -DDEV_PKG=1 -DLOG_LEVEL=${log_level}
+sudo make package
 
 # uninstall old versions
 echo "Going to remove e2sim-dev"

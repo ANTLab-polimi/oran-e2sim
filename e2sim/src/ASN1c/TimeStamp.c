@@ -37,9 +37,16 @@ TimeStamp_constraint(const asn_TYPE_descriptor_t *td, const void *sptr,
  * This type is implemented using OCTET_STRING,
  * so here we adjust the DEF accordingly.
  */
+// original
 static asn_oer_constraints_t asn_OER_type_TimeStamp_constr_1 CC_NOTUSED = {
 	{ 0, 0 },
 	8	/* (SIZE(8..8)) */};
+// end original
+// modified
+// asn_per_constraints_t asn_OER_type_TimeStamp_constr_1 CC_NOTUSED = {
+// 	{ 0, 0 },
+// 	8	/* (SIZE(8..8)) */};
+// end modification
 asn_per_constraints_t asn_PER_type_TimeStamp_constr_1 CC_NOTUSED = {
 	{ APC_UNCONSTRAINED,	-1, -1,  0,  0 },
 	{ APC_CONSTRAINED,	 0,  0,  8,  8 }	/* (SIZE(8..8)) */,

@@ -40,7 +40,9 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
   }
 
   int server_fd;
+  fprintf(stderr, "Creating a tcp socket");
   if((server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP)) == -1) {
+  // if((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     perror("socket");
     return -1;
   }
@@ -71,8 +73,9 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
 int sctp_start_client(const char *server_ip_str, const int server_port)
 {
   int client_fd;
-
+  fprintf(stderr, "Creating a tcp socket");
   if((client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP)) == -1)
+  // if((client_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
   {
      perror("socket");
      return -1;

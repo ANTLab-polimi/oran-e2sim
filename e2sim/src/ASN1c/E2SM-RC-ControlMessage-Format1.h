@@ -30,7 +30,7 @@ typedef struct E2SM_RC_ControlMessage_Format1 {
 		
 		/* Context for parsing across buffer boundaries */
 		asn_struct_ctx_t _asn_ctx;
-	} *ranParameters_List;
+	} * ranParameters_List;
 	/*
 	 * This type is extensible,
 	 * possible extensions are below.

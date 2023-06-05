@@ -71,6 +71,7 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
   }
 
   if((server_fd = socket(af, SOCK_STREAM, IPPROTO_SCTP)) == -1) {
+  // if((server_fd = socket(af, SOCK_STREAM, 0)) == -1) {
     LOG_E("socket");
     exit(EXIT_FAILURE);
   }
@@ -136,6 +137,7 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
   }
 
   if((client_fd = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP)) == -1)
+  // if((client_fd = socket(AF_INET6, SOCK_STREAM, 0)) == -1)
   {
      LOG_E("Socket creation, error message: %s", strerror(errno));
      exit(EXIT_FAILURE);
@@ -175,7 +177,7 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
   }
   // end binding ---------------------
 
-  LOG_I("[SCTP] Connecting to server at %s:%d ...", server_ip_str, server_port);
+  LOG_I("[SCTP] Connecting to server at %s:%d ... %d", server_ip_str, server_port, client_fd);
   if(connect(client_fd, server_addr, server_addr_len) == -1) {
     LOG_E("[SCTP] Connection error: %s", strerror(errno));
     exit(EXIT_FAILURE);

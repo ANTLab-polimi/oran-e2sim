@@ -23,8 +23,14 @@
 file(GLOB SOURCES "*.c")
 file(GLOB HEADERS "*.h")
 
-include_directories(.)
+
 add_library( asn1_objects OBJECT ${SOURCES})
+
+include_directories(.)
+# modified
+# to insert the 
+include_directories(../handover_ric_control)
+# end modification
 
 target_include_directories (asn1_objects PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

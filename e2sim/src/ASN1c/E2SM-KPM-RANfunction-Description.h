@@ -9,7 +9,8 @@
 #define	_E2SM_KPM_RANfunction_Description_H_
 
 
-#include <asn_application.h>
+// #include <asn_application.h>
+#include "asn_application.h"
 
 /* Including external dependencies */
 #include "RANfunction-Name.h"

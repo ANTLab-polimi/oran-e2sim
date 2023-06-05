@@ -1,4 +1,3 @@
-
 #/*****************************************************************************
 #                                                                            *
 # Copyright 2020 AT&T Intellectual Property                                  *
@@ -19,25 +18,29 @@
 
 # For clarity: this generates object, not a lib as the CM command implies.
 #
-add_library( messagerouting_objects OBJECT
-         e2ap_message_handler.cpp
-         e2ap_asn1c_codec.c
-	 )
-       
-include_directories(../ASN1c)
-include_directories(../encoding)       
 
-target_include_directories (messagerouting_objects PUBLIC                    
+file(GLOB SOURCES "*.cc")
+file(GLOB HEADERS "*.h")
+
+# set(SOURCES control_message_encoder_decoder.cc handover_control_message.cc)
+# set(HEADERS control_message_encoder_decoder.h handover_control_message.h)
+
+include_directories(../ASN1c)
+include_directories(.)
+
+# add_library( ric_control_objects OBJECT ${SOURCES})
+add_library( ric_control_objects OBJECT ${SOURCES} tinyxml2.cpp)
+# target_compile_definitions(ric_control_objects PUBLIC ASN_DISABLE_OER_SUPPORT)
+
+target_include_directories (ric_control_objects PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ASN1c>  
   $<INSTALL_INTERFACE:include>
-  PRIVATE src)
+  PRAIVATE src)
 
 # header files should go into .../include/xfcpp/
-if( DEV_PKG )                                                      
+if( DEV_PKG )                                   
   install( FILES
-    e2ap_message_handler.hpp
-    e2ap_asn1c_codec.h
+    ${HEADERS}
     DESTINATION ${install_inc}
     )
 endif()

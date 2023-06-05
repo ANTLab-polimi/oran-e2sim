@@ -54,6 +54,8 @@ public:
 
   int run_loop(std::string server_ip, uint16_t server_port, uint16_t local_port, std::string gnb_id, std::string plmn_id);
 
+  void test_return_msg();
+
 private:
 
     std::unordered_map<long, OCTET_STRING_t*> ran_functions_registered;
