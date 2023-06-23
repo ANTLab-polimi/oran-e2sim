@@ -100,8 +100,11 @@ void E2Sim::encode_and_send_sctp_data(E2AP_PDU_t* pdu)
   data.len = e2ap_asn1c_encode_pdu(pdu, &buf);
   memcpy(data.buffer, buf, min(data.len, MAX_SCTP_BUFFER));
 
-  LOG_I("Send data to client_fd %d", client_fd)
+  // LOG_I("Send data to client_fd %d", client_fd)
   sctp_send_data(client_fd, data);
+
+  // Asume we receive the same report all the tine
+  // test_return_msg();
 }
 
 void E2Sim::wait_for_sctp_data()
@@ -159,8 +162,8 @@ int E2Sim::run_loop(std::string server_ip, uint16_t server_port, uint16_t local_
 
     LOG_D("After generating e2setup req\n");
 
-    if (LOG_LEVEL == LOG_LEVEL_DEBUG)
-        xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_setup);
+    // if (LOG_LEVEL == LOG_LEVEL_DEBUG)
+    //     xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_setup);
 
     LOG_D("After XER Encoding\n");
 
@@ -212,9 +215,9 @@ int E2Sim::run_loop(std::string server_ip, uint16_t server_port, uint16_t local_
 }
 
 void E2Sim::test_return_msg(){
-    std::vector<long> ue_id_vec {1,2,3,4,5};
-    std::vector<long> start_position_vec {1,2,3,1,2};
-    std::vector<long> optimized_vec {2,1,4,3,5};
+    std::vector<long> ue_id_vec {7}; // {1,2,3,4,5};
+    std::vector<long> start_position_vec {4}; // {1,2,3,4,5};
+    std::vector<long> optimized_vec {2}; // {2,1,4,3,5};
     // for(int _ind = 0; _ind<(int)size; ++_ind){
     //     ue_id_vec[_ind] = (ue_id[_ind]);
     //     start_position_vec[_ind] = (start_position[_ind]);
@@ -227,7 +230,7 @@ void E2Sim::test_return_msg(){
     }
 
     std::string plmn("111");
-    std::cout<< "Plmn " << plmn << std::endl;
+    LOG_D("Plmn %s", plmn.c_str());
 
     AllHandoversListPlmn_t* allHandoversListPlmn = (AllHandoversListPlmn_t *) calloc(1, sizeof(AllHandoversListPlmn_t));
 
@@ -297,7 +300,7 @@ void E2Sim::test_return_msg(){
     
     // NS_LOG_INFO ();
     // 
-    xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu);
+    // xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu);
 
     xer_fprint(stderr, &asn_DEF_E2SM_RC_ControlMessage, rcControlMessage);
 
@@ -306,7 +309,7 @@ void E2Sim::test_return_msg(){
     unsigned char new_buf[len];
     memcpy(new_buf, buf, len);
 
-    std::cout << "Len og buff " << len << std::endl;
+    LOG_D("Len og buff %ld", len);
     
     // E2SM_RC_ControlMessage_t* rcNewControlMessage = (E2SM_RC_ControlMessage_t *) calloc(1,
     //                                                                          sizeof(E2SM_RC_ControlMessage_t));
