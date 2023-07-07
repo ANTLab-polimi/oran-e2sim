@@ -41,7 +41,29 @@
 #include "cell_handovers_list.h"
 #include "ProtocolIE-SingleContainer.h"
 
+#include <cstring>
+#include <getopt.h>
+#include <sys/time.h>
+#include <time.h>
+
 using namespace std;
+
+// modified
+// char *timestamp_local() {
+//     timeval curTime;
+//     gettimeofday(&curTime, NULL);
+//     int milli = curTime.tv_usec / 1000;
+
+//     char buffer[80];
+//     strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", localtime(&curTime.tv_sec));
+
+//     const int time_buffer_len = 84;
+//     static char currentTime[time_buffer_len] = "";
+//     snprintf(currentTime, time_buffer_len, "%s:%03d", buffer, milli);
+
+//     return currentTime;
+// }
+// end modificaion
 
 std::unordered_map<long , OCTET_STRING_t*> E2Sim::getRegistered_ran_functions() {
   return ran_functions_registered;
@@ -203,7 +225,7 @@ int E2Sim::run_loop(std::string server_ip, uint16_t server_port, uint16_t local_
             if (sctp_receive_data(client_fd, data_buf) <= 0)
                 break;
 
-            LOG_D("[SCTP] Received new data of size %d", data_buf.len);
+            LOG_I("[SCTP] Received new data of size %d", data_buf.len);
 
             e2ap_handle_sctp_data(client_fd, data_buf, this);
         }

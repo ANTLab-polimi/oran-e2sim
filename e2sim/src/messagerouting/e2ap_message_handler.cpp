@@ -29,9 +29,39 @@
 #include <unistd.h>
 #include <ProtocolIE-Field.h>
 
+#include <cstring>
+#include <getopt.h>
+#include <sys/time.h>
+#include <time.h>
+
+// modified
+char *timestamp_local() {
+    timeval curTime;
+    gettimeofday(&curTime, NULL);
+    int milli = curTime.tv_usec / 1000;
+
+    char buffer[80];
+    strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", localtime(&curTime.tv_sec));
+
+    const int time_buffer_len = 84;
+    static char currentTime[time_buffer_len] = "";
+    snprintf(currentTime, time_buffer_len, "%s:%03d", buffer, milli);
+
+    return currentTime;
+}
+// end modificaion
+
 
 void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
-    LOG_D("in e2ap_handle_sctp_data()");
+    // LOG_D("in e2ap_handle_sctp_data()");
+    
+
+    std::string mytext(reinterpret_cast<char*>(data.buffer));
+
+    LOG_I("%s [E2AP] Received SCTP data %d",timestamp_local(), data.len);
+
+    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), reinterpret_cast<char*>(data.buffer));
+
     //decode the data into E2AP-PDU
     auto *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
     ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, pdu);

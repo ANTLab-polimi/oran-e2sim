@@ -56,6 +56,8 @@ public:
 
   void test_return_msg();
 
+  // char *timestamp_local();
+
 private:
 
     std::unordered_map<long, OCTET_STRING_t*> ran_functions_registered;
