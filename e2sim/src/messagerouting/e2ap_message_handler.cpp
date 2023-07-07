@@ -236,7 +236,7 @@ void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim
     }
 
     if (func_exists) {
-        LOG_D("Calling callback function");
+        LOG_I("Calling callback function");
         cb(pdu);
     } else {
         LOG_E("Error: No RAN Function with this ID exists");
@@ -245,7 +245,7 @@ void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim
     auto* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
     encoding::generate_e2apv1_ric_control_acknowledge(res_pdu);
 
-    LOG_D("[E2AP] Created E2-RIC-CONTROL-ACKNOWLEDGE");
+    LOG_I("[E2AP] Created E2-RIC-CONTROL-ACKNOWLEDGE");
 
     e2ap_asn1c_print_pdu(res_pdu);
 

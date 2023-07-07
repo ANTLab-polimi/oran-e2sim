@@ -112,7 +112,7 @@ void E2Sim::wait_for_sctp_data()
   sctp_buffer_t recv_buf;
   if(sctp_receive_data(client_fd, recv_buf) > 0)
   {
-    LOG_D("[SCTP] Received new data of size %d", recv_buf.len);
+    LOG_I("[SCTP] Received new data of size %d", recv_buf.len);
       e2ap_handle_sctp_data(client_fd, recv_buf, this);
   }
 }
