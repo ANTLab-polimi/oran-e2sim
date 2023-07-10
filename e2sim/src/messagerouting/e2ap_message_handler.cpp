@@ -55,7 +55,6 @@ char *timestamp_local() {
 void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
     // LOG_D("in e2ap_handle_sctp_data()");
     
-
     std::string mytext(reinterpret_cast<char*>(data.buffer));
 
     LOG_I("%s [E2AP] Received SCTP data %d",timestamp_local(), data.len);
