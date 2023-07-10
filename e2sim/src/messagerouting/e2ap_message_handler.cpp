@@ -58,8 +58,8 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
     std::string mytext(reinterpret_cast<char*>(data.buffer));
 
     LOG_I("%s [E2AP] Received SCTP data %d",timestamp_local(), data.len);
-
-    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), reinterpret_cast<char*>(data.buffer));
+    std::string _buffer_str (reinterpret_cast<char*>(data.buffer));
+    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), _buffer_str.c_str());
 
     //decode the data into E2AP-PDU
     auto *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
