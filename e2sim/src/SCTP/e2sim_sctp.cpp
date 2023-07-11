@@ -268,6 +268,8 @@ int sctp_receive_data(int &socket_fd, sctp_buffer_t &data)
   // Receive data from the socket
   int recv_len = recv(socket_fd, &data.buffer, sizeof(data.buffer), 0);
 
+  std::cout << "[sctp_receive_data] Received data with size " << data.len << std::endl;
+
   if(recv_len == -1)
   {
     LOG_E("[SCTP] recv: %s", strerror(errno));
