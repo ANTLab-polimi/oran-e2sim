@@ -55,11 +55,22 @@ char *timestamp_local() {
 void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
     // LOG_D("in e2ap_handle_sctp_data()");
     
-    std::string mytext(reinterpret_cast<char*>(data.buffer));
+    // std::string mytext(reinterpret_cast<char*>(&data.buffer[0]), data.len);
+    // uint8_t* buff;
+    // memcpy(buff, data.buffer, data.len);
+
+    std::string mytext;
+    mytext.assign((const char *)(&data.buffer[0]), data.len);
+
+    std::cout << "My text "  << mytext << std::endl;
 
     LOG_I("%s [E2AP] Received SCTP data %d",timestamp_local(), data.len);
     std::string _buffer_str (reinterpret_cast<char*>(data.buffer));
-    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), _buffer_str.c_str());
+    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), mytext.c_str());
+    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), (&data.buffer[0]));
+    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), data.buffer);
+    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), buff);
+    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), reinterpret_cast<char*>(data.buffer));
 
     //decode the data into E2AP-PDU
     auto *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
