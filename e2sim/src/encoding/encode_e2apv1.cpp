@@ -754,8 +754,9 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
     int ret = asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, errbuff, &errlen);
     if (ret < 0) {
         LOG_E("%s", errbuff);
-    } else if (LOG_LEVEL == LOG_LEVEL_DEBUG)
-        xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
+    } 
+    // else if (LOG_LEVEL == LOG_LEVEL_DEBUG)
+    //     xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
     free(errbuff);
 }
 

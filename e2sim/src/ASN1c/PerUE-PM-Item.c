@@ -22,6 +22,8 @@ memb_list_of_PM_Information_constraint_1(const asn_TYPE_descriptor_t *td, const 
 	
 	/* Determine the number of elements */
 	size = _A_CSEQUENCE_FROM_VOID(sptr)->count;
+
+	ASN_INFO("[PerUE-PM-Item:memb_list_of_PM_Information_constraint_1 ] size  %d ", (int)size);
 	
 	if((size >= 1 && size <= 2147483647)) {
 		/* Perform validation of the inner elements */

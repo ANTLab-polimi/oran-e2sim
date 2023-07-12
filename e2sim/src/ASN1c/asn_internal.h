@@ -74,8 +74,24 @@ void CC_PRINTFLIKE(1, 2) ASN_DEBUG_f(const char *fmt, ...);
 #else	/* ASN_EMIT_DEBUG != 1 */
 #if __STDC_VERSION__ >= 199901L
 #define ASN_DEBUG(...) do{}while(0)
+#define	ASN_INFO(fmt, args...)	do {			\
+		int adi = asn_debug_indent;		\
+		while(adi--) fprintf(stderr, " ");	\
+		fprintf(stderr, fmt, ##args);		\
+		fprintf(stderr, " (%s:%d)\n",		\
+			__FILE__, __LINE__);		\
+	} while(0)
 #else   /* not C99 */
 static void CC_PRINTFLIKE(1, 2) ASN_DEBUG(const char *fmt, ...) { (void)fmt; }
+
+#define	ASN_INFO(fmt, args...)	do {			\
+    int adi = asn_debug_indent;		\
+    while(adi--) fprintf(stderr, " ");	\
+    fprintf(stderr, fmt, ##args);		\
+    fprintf(stderr, " (%s:%d)\n",		\
+        __FILE__, __LINE__);		\
+} while(0)
+
 #endif  /* C99 or better */
 #endif	/* ASN_EMIT_DEBUG */
 #endif	/* ASN_DEBUG */

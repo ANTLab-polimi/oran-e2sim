@@ -102,6 +102,8 @@ aper_decode_complete(const asn_codec_ctx_t *opt_codec_ctx,
 	asn_dec_rval_t rval;
 
 	rval = aper_decode(opt_codec_ctx, td, sptr, buffer, size, 0, 0);
+
+	ASN_INFO("[aper_decode_complete] rval %d %d", (int)rval.code, (int)rval.consumed);
 	if(rval.consumed) {
 		/*
 		 * We've always given 8-aligned data,
@@ -134,7 +136,7 @@ aper_decode(const asn_codec_ctx_t *opt_codec_ctx,
 	asn_dec_rval_t rval;
 	asn_per_data_t pd;
 
-	ASN_DEBUG("[aper_decode]" );
+	// ASN_INFO("[aper_decode] %d %d %ld", skip_bits, unused_bits, (long)size);
 
 	if(skip_bits < 0 || skip_bits > 7
 		|| unused_bits < 0 || unused_bits > 7
@@ -162,6 +164,7 @@ aper_decode(const asn_codec_ctx_t *opt_codec_ctx,
 	pd.buffer = (const uint8_t *)buffer;
 	pd.nboff = skip_bits;
 	pd.nbits = 8 * size - unused_bits; /* 8 is CHAR_BIT from <limits.h> */
+	// ASN_INFO("[aper_decode] test2 %d %d %d", (int)pd.nboff, (int)pd.nbits, (int)td->op->aper_decoder);
 	if(pd.nboff > pd.nbits)
 		ASN__DECODE_FAILED;
 
