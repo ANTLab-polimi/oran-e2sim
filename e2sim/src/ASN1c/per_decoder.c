@@ -134,11 +134,13 @@ aper_decode(const asn_codec_ctx_t *opt_codec_ctx,
 	asn_dec_rval_t rval;
 	asn_per_data_t pd;
 
+	ASN_DEBUG("[aper_decode]" );
+
 	if(skip_bits < 0 || skip_bits > 7
 		|| unused_bits < 0 || unused_bits > 7
 		|| (unused_bits > 0 && !size))
 		ASN__DECODE_FAILED;
-
+		
 	/*
 	 * Stack checker requires that the codec context
 	 * must be allocated on the stack.

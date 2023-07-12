@@ -61,6 +61,10 @@ namespace encoding {
   void generate_e2apv1_service_update(E2AP_PDU_t *e2ap_pdu, std::vector<ran_func_info> all_funcs);
 
   long get_function_id_from_control_request(E2AP_PDU_t *pdu);
+
+  int e2ap_asn1c_encode_pdu_test(E2AP_PDU_t* pdu, unsigned char **buffer);
+
+  struct asn_dec_rval_s e2ap_asn1c_decode_pdu_test(E2AP_PDU_t *pdu, enum asn_transfer_syntax syntax, unsigned char *buffer, int len);
 }
 
 #endif

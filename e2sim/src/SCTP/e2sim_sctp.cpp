@@ -225,10 +225,9 @@ int sctp_accept_connection(const char *server_ip_str, const int server_fd)
 
 int sctp_send_data(int &socket_fd, sctp_buffer_t &data)
 {
-  LOG_D("in sctp send data func\n");
-  LOG_D("data.len is %d", data.len);
+  LOG_D("[sctp_send_data] data.len is %d", data.len);
   int sent_len = send(socket_fd, data.buffer, data.len, 0);
-  LOG_D("after getting sent_len\n");
+  LOG_D("[sctp_send_data] after getting sent_len %d \n", sent_len);
 
   if(sent_len == -1) {
     LOG_E("[SCTP] sctp_send_data, error message: %s", strerror(errno));

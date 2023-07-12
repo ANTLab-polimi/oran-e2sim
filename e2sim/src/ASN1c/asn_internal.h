@@ -133,7 +133,8 @@ asn__format_to_callback(
 /*
  * Check stack against overflow, if limit is set.
  */
-#define	ASN__DEFAULT_STACK_MAX	(30000)
+// #define	ASN__DEFAULT_STACK_MAX	(30000)
+#define	ASN__DEFAULT_STACK_MAX	(32768)
 static int CC_NOTUSED
 ASN__STACK_OVERFLOW_CHECK(const asn_codec_ctx_t *ctx) {
 	if(ctx && ctx->max_stack_size) {

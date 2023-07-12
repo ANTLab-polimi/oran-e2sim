@@ -693,7 +693,8 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
     ricind_ies6->value.choice.RICindicationHeader.size = header_length;
     memcpy(ricind_ies6->value.choice.RICindicationHeader.buf, ind_header_buf, header_length);
 
-    ricind_ies7->value.choice.RICindicationMessage.buf = (uint8_t *) calloc(1, 8192);
+    // ricind_ies7->value.choice.RICindicationMessage.buf = (uint8_t *) calloc(1, 8192);
+    ricind_ies7->value.choice.RICindicationMessage.buf = (uint8_t *) calloc(1, 32768);
 
     ricind_ies7->id = ProtocolIE_ID_id_RICindicationMessage;
 
@@ -756,4 +757,42 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
     } else if (LOG_LEVEL == LOG_LEVEL_DEBUG)
         xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
     free(errbuff);
+}
+
+
+
+int encoding::e2ap_asn1c_encode_pdu_test(E2AP_PDU_t* pdu, unsigned char **buffer)
+{
+  int len;
+
+  *buffer = NULL;
+  assert(pdu != NULL);
+  assert(buffer != NULL);
+
+  len = aper_encode_to_new_buffer(&asn_DEF_E2AP_PDU, 0, pdu, (void **)buffer);
+
+    if (len < 0) {
+        LOG_E("[E2AP ASN] Unable to aper encode");
+        exit(EXIT_FAILURE); 
+    } else {
+        LOG_D("[E2AP ASN] Encoded succesfully, encoded size = %d", len);
+    }
+
+  ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_E2AP_PDU, pdu);
+
+  return len;
+}
+
+struct asn_dec_rval_s encoding::e2ap_asn1c_decode_pdu_test(E2AP_PDU_t *pdu, enum asn_transfer_syntax syntax, unsigned char *buffer, int len) {
+    asn_dec_rval_t dec_ret;
+    assert(buffer != NULL);
+
+    dec_ret = asn_decode(NULL, syntax, &asn_DEF_E2AP_PDU, (void **) &pdu, buffer, len);
+    if (dec_ret.code != RC_OK) {
+        LOG_E("[E2AP ASN] Failed to decode pdu");
+        exit(EXIT_FAILURE);
+    } else {
+        LOG_D("[E2AP ASN] Decoded successfully");
+        return dec_ret;
+    }
 }

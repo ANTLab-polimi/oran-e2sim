@@ -76,15 +76,19 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
 
     LOG_I("%s [E2AP] Received SCTP data %d",timestamp_local(), data.len);
     // std::string _buffer_str (reinterpret_cast<char*>(data.buffer));
-    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), mytext.c_str());
-    std::cout << std::hex;
+    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), mytext.c_str());
+    // std::cout << std::hex;
 
-    for (uint32_t _buffInd = 0; _buffInd<data.len; _buffInd++){
-        std::cout << std::setfill('0') << std::setw(2) << data.buffer[_buffInd];
+    char printBuffer[40960]{};
+    char *tmp = printBuffer;
+    for (size_t _buffInd = 0; (size_t)_buffInd<data.len; ++_buffInd){
+        snprintf(tmp, 3, "%02x", data.buffer[_buffInd]);
+        tmp += 2;
+        // std::cout << std::setfill('0') << std::setw(2) << data.buffer[_buffInd];
     }
-    std::cout << '\n';
+    // std::cout << '\n';
     // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), (&data.buffer[0]));
-    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), data.buffer);
+    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), printBuffer);
     // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), buff);
     // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), reinterpret_cast<char*>(data.buffer));
 
