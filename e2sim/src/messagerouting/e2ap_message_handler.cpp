@@ -33,6 +33,9 @@
 #include <getopt.h>
 #include <sys/time.h>
 #include <time.h>
+#include <iomanip>
+// #include <format>
+// #include <span>
 
 // modified
 char *timestamp_local() {
@@ -58,17 +61,30 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
     // std::string mytext(reinterpret_cast<char*>(&data.buffer[0]), data.len);
     // uint8_t* buff;
     // memcpy(buff, data.buffer, data.len);
+    // auto sp = std::span(data.buffer, data.len);
+    std::string mytext {};
+    mytext.reserve(data.len+1);
+    // std::transform( sp.begin(), sp.end(),
+    //             std::back_inserter(mytext),
+    //             [](unsigned char c) -> std::string {
+    //                 return std::format("{:02X}", int(c));
+    //             });
 
-    std::string mytext;
     mytext.assign((const char *)(&data.buffer[0]), data.len);
 
-    std::cout << "My text "  << mytext << std::endl;
+    // std::cout << "[E2AP] Received SCTP data "  << mytext << std::endl;
 
     LOG_I("%s [E2AP] Received SCTP data %d",timestamp_local(), data.len);
-    std::string _buffer_str (reinterpret_cast<char*>(data.buffer));
+    // std::string _buffer_str (reinterpret_cast<char*>(data.buffer));
     LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), mytext.c_str());
-    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), (&data.buffer[0]));
-    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), data.buffer);
+    std::cout << std::hex;
+
+    for (uint32_t _buffInd = 0; _buffInd<data.len; _buffInd++){
+        std::cout << std::setfill('0') << std::setw(2) << data.buffer[_buffInd];
+    }
+    std::cout << '\n';
+    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), (&data.buffer[0]));
+    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), data.buffer);
     // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), buff);
     // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), reinterpret_cast<char*>(data.buffer));
 
