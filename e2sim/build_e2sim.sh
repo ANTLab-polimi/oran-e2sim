@@ -19,7 +19,7 @@ fi
 
 # build
 cd build || (echo "build folder does not exist, the script will create it" && mkdir build && cd build)
-sudo cmake .. -DDEV_PKG=1 -DLOG_LEVEL=${log_level} -DBELL_LABS=1
+sudo cmake .. -DDEV_PKG=1 -DLOG_LEVEL=${log_level}
 sudo make package
 
 # uninstall old versions
