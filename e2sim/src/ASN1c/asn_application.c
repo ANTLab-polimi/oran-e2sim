@@ -433,7 +433,7 @@ asn_decode(const asn_codec_ctx_t *opt_codec_ctx,
         if(!td->op->random_fill) {
             ASN__DECODE_FAILED;
         } else {
-            if(asn_random_fill(td, sptr, 16000) == 0) {
+            if(asn_random_fill(td, sptr, 32768) == 0) {
                 asn_dec_rval_t ret = {RC_OK, 0};
                 return ret;
             } else {

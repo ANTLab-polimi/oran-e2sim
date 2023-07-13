@@ -21,6 +21,7 @@ asn_set_add(void *asn_set_of_x, void *ptr) {
 	/*
 	 * Make sure there's enough space to insert an element.
 	 */
+	// ASN_INFO("[asn_SET_OF] asn_set_add count %d size %d", as->count, as->size);
 	if(as->count == as->size) {
 		int _newsize = as->size ? (as->size << 1) : 4;
 		void *_new_arr;

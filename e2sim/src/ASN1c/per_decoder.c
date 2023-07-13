@@ -103,7 +103,7 @@ aper_decode_complete(const asn_codec_ctx_t *opt_codec_ctx,
 
 	rval = aper_decode(opt_codec_ctx, td, sptr, buffer, size, 0, 0);
 
-	ASN_INFO("[aper_decode_complete] rval %d %d", (int)rval.code, (int)rval.consumed);
+	// ASN_INFO("[aper_decode_complete] rval %d %d", (int)rval.code, (int)rval.consumed);
 	if(rval.consumed) {
 		/*
 		 * We've always given 8-aligned data,

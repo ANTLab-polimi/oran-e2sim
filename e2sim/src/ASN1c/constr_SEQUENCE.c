@@ -1508,6 +1508,8 @@ SEQUENCE_decode_aper(const asn_codec_ctx_t *opt_codec_ctx,
 
 	ASN_DEBUG("Decoding %s as SEQUENCE (APER)", td->name);
 
+	// ASN_INFO("[SEQUENCE_decode_aper] Decoding %s as SEQUENCE (APER)", td->name);
+
 	/* Handle extensions */
 	if(specs->first_extension < 0) {
 		extpresent = 0;
@@ -1537,6 +1539,7 @@ SEQUENCE_decode_aper(const asn_codec_ctx_t *opt_codec_ctx,
 	/*
 	 * Get the sequence ROOT elements.
 	 */
+	// ASN_INFO("[SEQUENCE_decode_aper] Elements count %d ", (int)td->elements_count);
 	for(edx = 0; edx < td->elements_count; edx++) {
 		asn_TYPE_member_t *elm = &td->elements[edx];
 		void *memb_ptr;		/* Pointer to the member */
@@ -1598,12 +1601,15 @@ SEQUENCE_decode_aper(const asn_codec_ctx_t *opt_codec_ctx,
 		/* Fetch the member from the stream */
 		ASN_DEBUG("Decoding member \"%s\" in %s", elm->name, td->name);
 
+		// ASN_INFO("[SEQUENCE_decode_aper] Flags %d ", (elm->flags & ATF_OPEN_TYPE) );
+
 		if(elm->flags & ATF_OPEN_TYPE) {
 			rv = OPEN_TYPE_aper_get(opt_codec_ctx, td, st, elm, pd);
 		} else {
 			rv = elm->type->op->aper_decoder(opt_codec_ctx, elm->type,
 					elm->encoding_constraints.per_constraints, memb_ptr2, pd);
 		}
+		// ASN_INFO("[SEQUENCE_decode_aper] rv code %d ", rv.code );
 		if(rv.code != RC_OK) {
 			ASN_DEBUG("Failed decode %s in %s",
 			          elm->name, td->name);
@@ -1668,8 +1674,10 @@ SEQUENCE_decode_aper(const asn_codec_ctx_t *opt_codec_ctx,
 			}
 
 			ASN_DEBUG("Decoding member %s in %s %p", elm->name, td->name, *memb_ptr2);
+			// ASN_INFO("[SEQUENCE_decode_aper] Decoding member %s in %s %p", elm->name, td->name, *memb_ptr2);
 			rv = aper_open_type_get(opt_codec_ctx, elm->type,
 			                        elm->encoding_constraints.per_constraints, memb_ptr2, pd);
+			// ASN_INFO("[SEQUENCE_decode_aper] Decoding member %d", (int)rv.code);
 			if(rv.code != RC_OK) {
 				FREEMEM(epres);
 				return rv;
@@ -1719,7 +1727,7 @@ SEQUENCE_decode_aper(const asn_codec_ctx_t *opt_codec_ctx,
 			ASN__DECODE_FAILED;
 		}
 	}
-
+	// ASN_INFO("[SEQUENCE_decode_aper] consumed %d code %d", (int)rv.consumed, (int)rv.code);
 	rv.consumed = 0;
 	rv.code = RC_OK;
 	return rv;
