@@ -85,10 +85,10 @@ E2AP_PDU_t* e2ap_xml_to_pdu(char const* xml_message)
 E2setupRequest_t* smaller_e2ap_xml_to_pdu(char const* xml_message)
 {
   // E2AP_PDU_t *pdu = new E2AP_PDU_t();
-  E2AP_PDU_t *pdu = calloc(1, sizeof(E2AP_PDU_t));
+  // E2AP_PDU_t *pdu = calloc(1, sizeof(E2AP_PDU_t));
 
   //  GlobalE2node_ID_t *globale2nodeid = (GlobalE2node_ID_t*)calloc(1, sizeof(GlobalE2node_ID_t));
-  GlobalE2node_ID_t *globale2nodeid = (GlobalE2node_ID_t*)calloc(1, sizeof(GlobalE2node_ID_t));
+  // GlobalE2node_ID_t *globale2nodeid = (GlobalE2node_ID_t*)calloc(1, sizeof(GlobalE2node_ID_t));
   E2setupRequest_t *e2setuprequest = (E2setupRequest_t*)calloc(1,sizeof(E2setupRequest_t));
 
   uint8_t         buf[MAX_XML_BUFFER];
@@ -125,6 +125,8 @@ E2setupRequest_t* smaller_e2ap_xml_to_pdu(char const* xml_message)
   rval = xer_decode(0, &asn_DEF_E2setupRequest, (void **)&e2setuprequest, buf, size);
 
   assert(rval.code == RC_OK);
+
+  // free(globale2nodeid);
 
   return e2setuprequest;
 }

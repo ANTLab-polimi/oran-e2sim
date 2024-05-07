@@ -748,6 +748,9 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
     e2ap_pdu->present = E2AP_PDU_PR_initiatingMessage;
     e2ap_pdu->choice.initiatingMessage = initmsg;
 
+    // std::cout << "Pringing the init msg encode_e2apv1 " << std::endl;
+    // xer_fprint(stdout, &asn_DEF_InitiatingMessage, initmsg);
+
     size_t errlen = 10000;
     auto errbuff = (char *) calloc(errlen, sizeof(char));
 

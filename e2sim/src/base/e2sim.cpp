@@ -41,28 +41,40 @@
 #include "cell_handovers_list.h"
 #include "ProtocolIE-SingleContainer.h"
 
+#include "RICindication.h"
+#include "InitiatingMessage.h"
+#include "ProtocolIE-Field.h"
+#include "E2AP-PDU.h"
+#include "E2SM-KPM-IndicationMessage.h"
+
 #include <cstring>
 #include <getopt.h>
 #include <sys/time.h>
 #include <time.h>
+#include <sstream>
+#include <string>
 
 using namespace std;
 
 // modified
-// char *timestamp_local() {
-//     timeval curTime;
-//     gettimeofday(&curTime, NULL);
-//     int milli = curTime.tv_usec / 1000;
+char* converHexToByteLocal(std::string hexString) {
 
-//     char buffer[80];
-//     strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", localtime(&curTime.tv_sec));
+    char * bytes = new char[hexString.length()/2];
+    std::stringstream converter;
 
-//     const int time_buffer_len = 84;
-//     static char currentTime[time_buffer_len] = "";
-//     snprintf(currentTime, time_buffer_len, "%s:%03d", buffer, milli);
-
-//     return currentTime;
-// }
+    for(int i = 0; i < hexString.length(); i+=2)
+    {
+        converter << std::hex << hexString.substr(i,2);
+        int byte;
+        converter >> byte;
+        bytes[i/2] = byte & 0xFF;
+        converter.str(std::string());
+        converter.clear();
+    }
+    // char* bytesPointer= bytes;
+    // return bytesPointer;
+    return bytes;
+}  
 // end modificaion
 
 std::unordered_map<long , OCTET_STRING_t*> E2Sim::getRegistered_ran_functions() {
@@ -116,17 +128,66 @@ void E2Sim::register_e2sm(long func_id, OCTET_STRING_t *ostr) {
 
 void E2Sim::encode_and_send_sctp_data(E2AP_PDU_t* pdu)
 {
+  // print pdu
+  // InitiatingMessage_t* initMsg; 
+  // if(pdu->present == E2AP_PDU_PR_initiatingMessage){
+  //   std::cout << "enc 1" << std::endl;
+  //   initMsg = pdu->choice.initiatingMessage;
+  //   // std::cout << "Pringing the init msg encode_and_send_sctp_data " << std::endl;
+  //   // xer_fprint(stdout, &asn_DEF_InitiatingMessage, initMsg);
+  //   RICindication_t* ricIndication = &initMsg->value.choice.RICindication;
+  //   // xer_fprint(stdout, &asn_DEF_RICindication, ricIndication);
+  //   for (uint8_t idx = 0; idx < ricIndication->protocolIEs.list.count; idx++)
+  //   {
+      
+  //       RICindication_IEs *ie = ricIndication->protocolIEs.list.array [idx];
+  //       // std::cout << "enc 2 " << ie->id << std::endl;
+  //       switch(ie->value.present)
+  //       {
+  //           case RICindication_IEs__value_PR_RICindicationMessage:  // RIC indication message
+  //           {
+  //             // std::cout << "enc 3" << std::endl;
+  //               int payload_size = ie->value.choice.RICindicationMessage.size;
+
+  //               char* payload = (char*) calloc(payload_size, sizeof(char));
+  //               memcpy(payload, ie->value.choice.RICindicationMessage.buf, payload_size);
+
+  //               E2SM_KPM_IndicationMessage_t *descriptor = 0;
+  //               auto retvalMsgKpm = asn_decode(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_KPM_IndicationMessage, (void **) &descriptor, payload, payload_size);
+                
+  //               // std::cout << "priting the ind msg" << std::endl;
+  //               // xer_fprint(stdout, &asn_DEF_E2SM_KPM_IndicationMessage, descriptor);
+  //               free(payload);
+  //               break;
+  //           }
+  //       }
+  //   }
+  // }
+
   uint8_t       *buf;
   sctp_buffer_t data;
 
   data.len = e2ap_asn1c_encode_pdu(pdu, &buf);
   memcpy(data.buffer, buf, min(data.len, MAX_SCTP_BUFFER));
 
-  // LOG_I("Send data to client_fd %d", client_fd)
-  sctp_send_data(client_fd, data);
+  int sent_size = sctp_send_data(client_fd, data);
+  
 
+  char printBuffer[40960]{};
+  char *tmp = printBuffer;
+  for (size_t i = 0; i < (size_t)data.len; ++i) {
+      snprintf(tmp, 3, "%02x", data.buffer[i]);
+      tmp += 2;
+  }
+  printBuffer[data.len] = 0;
+
+  LOG_I("Send data to xapp with client id %d with data size %d and final size %d", client_fd, data.len, sent_size);
+  
+  // LOG_I("Data Buffer %s", printBuffer);
+  
   // Asume we receive the same report all the tine
   // test_return_msg();
+  // test_buffer_msg();
 }
 
 void E2Sim::wait_for_sctp_data()
@@ -215,6 +276,7 @@ int E2Sim::run_loop(std::string server_ip, uint16_t server_port, uint16_t local_
 
     // test 
     // test_return_msg();
+    // test_buffer_msg();
     // return EXIT_SUCCESS;
     // end test
 
@@ -225,7 +287,7 @@ int E2Sim::run_loop(std::string server_ip, uint16_t server_port, uint16_t local_
             if (sctp_receive_data(client_fd, data_buf) <= 0)
                 break;
 
-            LOG_I("[SCTP] Received new data of size %d", data_buf.len);
+            // LOG_I("[SCTP] Received n ew data of size %d", data_buf.len);
 
             e2ap_handle_sctp_data(client_fd, data_buf, this);
         }
@@ -234,6 +296,45 @@ int E2Sim::run_loop(std::string server_ip, uint16_t server_port, uint16_t local_
     }
 
     return EXIT_SUCCESS;
+}
+
+void E2Sim::test_buffer_msg(){
+  const char* _e2ap_pdu = "40313131010000000100000102003c000000002c0000000100000004584d000000000002be0b02000100000001ff000e00ffffffffffff0300030000003200ffff00000000000000000000003c000000002c0000000100000004e880000000000002be0b02000100000001ff000e00ffffffffffff0800050000003200ffff000000000000000000000101010101010200ff01010100";
+
+  std::string _e2ap_pduString = std::string(_e2ap_pdu);
+  std::cout << "Length of string " << _e2ap_pduString.size() << std::endl;
+
+  char* bytes = converHexToByteLocal(_e2ap_pduString);
+
+  // printf("Get length of string -> %d\n", (int)strlen(bytes));
+
+  // int buffer_size = (int)strlen(bytes);
+  int buffer_size = (int)_e2ap_pduString.length()/2;
+
+  // uint8_t *e2ApBuffer = (uint8_t *)calloc(1, (_e2ap_pduString.length()));
+  // memcpy(e2ApBuffer, bytes, (_e2ap_pduString.length()/2));
+
+  uint8_t *e2ApBuffer = (uint8_t *)calloc(1, buffer_size);
+  memcpy(e2ApBuffer, bytes, buffer_size);
+
+  RICcontrolRequest_IEs_t* singleRequest = (RICcontrolRequest_IEs_t *)calloc(1, sizeof(RICcontrolRequest_IEs_t));
+  singleRequest->value.present = RICcontrolRequest_IEs__value_PR_RICcontrolMessage;
+  singleRequest->value.choice.RICcontrolMessage.buf = e2ApBuffer;
+  singleRequest->value.choice.RICcontrolMessage.size = buffer_size;
+  singleRequest->id =23;
+
+  InitiatingMessage_t* initMsg = (InitiatingMessage_t * )calloc(1, sizeof(InitiatingMessage_t));
+  initMsg->value.present = InitiatingMessage__value_PR_RICcontrolRequest;
+  initMsg->criticality = Criticality_ignore;
+  ASN_SEQUENCE_ADD(&(initMsg->value.choice.RICcontrolRequest.protocolIEs.list) , singleRequest);    
+
+
+  E2AP_PDU_t* pdu = (E2AP_PDU_t * )calloc(1, sizeof(E2AP_PDU_t));
+  pdu->present = E2AP_PDU_PR_initiatingMessage;
+  pdu->choice.initiatingMessage = initMsg;
+  
+  get_sm_callback(300)(pdu);
+
 }
 
 void E2Sim::test_return_msg(){

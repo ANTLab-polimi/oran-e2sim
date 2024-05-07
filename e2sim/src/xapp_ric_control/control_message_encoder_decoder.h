@@ -13,6 +13,9 @@ extern "C" {
 #include "handover_list.h"
 #include "E2SM-RC-ControlMessage.h"
 #include "E2AP-PDU.h"
+
+
+#include "V2X-Scheduling-All-Users.h" 
 }
 
 #define MAX_SCTP_BUFFER_CTRL     10000
@@ -30,6 +33,17 @@ namespace encoding {
     // uint8_t buffer[MAX_SCTP_BUFFER_CTRL];
     uint8_t* buffer;
   } sctp_buffer_t;
+
+  typedef struct dest_sched{
+    std::vector<sctp_buffer_t> singleUserAllocations;
+    // long v2xNodeId;
+    long cReselectionCounter;
+    long slResourceReselectionCounter;
+    long prevSlResoReselCounter;
+    long nrSlHarqId;
+    long nSelected;
+    long tbTxCounter;
+  } dest_sched_t;
 
   typedef struct e2ap_stcp_buffer{
     int msg_length;
@@ -53,6 +67,8 @@ namespace encoding {
   std::map<long, std::map<long, long>> decode_handover_control_message(uint8_t* buffer, size_t buffSize);
   
   extern encoding::e2ap_stcp_buffer_t* decode_e2ap_to_xml(uint8_t* buffer, size_t buffSize);
+
+  extern std::map<long, std::map<long, encoding::dest_sched_t>> extract_scheduling_map(V2X_Scheduling_All_Users_t* v2XSchedulingAllUsersList); 
 
   extern std::map<long, std::map<long, long>> extract_handover_map(AllHandoversList_t* pdu);
 

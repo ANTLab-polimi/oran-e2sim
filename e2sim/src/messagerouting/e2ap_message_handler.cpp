@@ -74,7 +74,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
 
     // std::cout << "[E2AP] Received SCTP data "  << mytext << std::endl;
 
-    LOG_I("%s [E2AP] Received SCTP data %d",timestamp_local(), data.len);
+    // LOG_I("%s [E2AP] Received SCTP data %d",timestamp_local(), data.len);
     // std::string _buffer_str (reinterpret_cast<char*>(data.buffer));
     // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), mytext.c_str());
     // std::cout << std::hex;
@@ -88,12 +88,10 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
     }
     // std::cout << '\n';
     // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), (&data.buffer[0]));
-    LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), printBuffer);
-    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), buff);
-    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), reinterpret_cast<char*>(data.buffer));
+    // LOG_I("%s [E2AP] Received SCTP data buffer %s", timestamp_local(), printBuffer);
 
     //decode the data into E2AP-PDU
-    auto *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
+    E2AP_PDU_t *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
     ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, pdu);
     asn_transfer_syntax syntax = ATS_ALIGNED_BASIC_PER;
 
@@ -282,6 +280,8 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
 
             break;
     }
+
+    free(pdu);
 }
 
 void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim) {
@@ -302,7 +302,7 @@ void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim
         LOG_E("Error: No RAN Function with this ID exists");
     }
 
-    auto* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
+    E2AP_PDU_t* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
     encoding::generate_e2apv1_ric_control_acknowledge(res_pdu);
 
     LOG_I("[E2AP] Created E2-RIC-CONTROL-ACKNOWLEDGE");
@@ -326,7 +326,7 @@ void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim
     } else {
         LOG_E("[SCTP] Unable to send E2-SERVICE-UPDATE to peer");
     }
-
+    free(res_pdu);
 }
 
 void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) {
@@ -378,11 +378,14 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
   } else {
     LOG_E("[SCTP] Unable to send E2-SERVICE-UPDATE to peer");
   }
+
+  free(res_pdu);
+  free(error_buf);
 }
 
 void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
-  auto* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
+  E2AP_PDU_t* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
   encoding::generate_e2apv1_setup_response(res_pdu);
 
 
@@ -436,6 +439,9 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
   } else {
     LOG_E("[SCTP] Unable to send E2-SUBSCRIPTION-REQUEST to peer");
   }
+
+  free(res_pdu);
+  free(pdu_sub);
 }
 
 /*

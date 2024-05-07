@@ -80,7 +80,7 @@ set ( srcd "${CMAKE_CURRENT_SOURCE_DIR}" )
 # enable code to find them after we build them.
 #
 # include_directories( "${srcd}/src/DEF;${srcd}/src/SCTP;${srcd}/src/messagerouting;${srcd}/src/base;${srcd}/src/encoding" )
-include_directories( "${srcd}/src/DEF;${srcd}/src/SCTP;${srcd}/src/messagerouting;${srcd}/src/base;${srcd}/src/encoding;${srcd}/src/handover_ric_control" )
+include_directories( "${srcd}/src/DEF;${srcd}/src/SCTP;${srcd}/src/messagerouting;${srcd}/src/base;${srcd}/src/encoding;${srcd}/src/xapp_ric_control" )
 
 
 # Compiler flags
@@ -108,7 +108,7 @@ add_subdirectory(src/messagerouting)
 add_subdirectory(src/base)
 add_subdirectory(src/encoding)
 
-add_subdirectory(src/handover_ric_control)
+add_subdirectory(src/xapp_ric_control)
 
 
 # add_library( e2sim_shared SHARED
@@ -137,7 +137,7 @@ if( DEV_PKG )
 	)
 
 	# target_include_directories( e2sim_static PUBLIC "src/DEF" "src/SCTP" "src/messagerouting" "src/base" "src/encoding" "src/ASN1c")	
-	target_include_directories( e2sim_static PUBLIC "src/DEF" "src/SCTP" "src/messagerouting" "src/base" "src/encoding" "src/ASN1c" "src/handover_ric_control")	
+	target_include_directories( e2sim_static PUBLIC "src/DEF" "src/SCTP" "src/messagerouting" "src/base" "src/encoding" "src/ASN1c" "src/xapp_ric_control")	
 
 	message("Inserting the header directoryy /usr/local/${install_inc}")
 	target_include_directories(e2sim_static PUBLIC "/usr/local/${install_inc}")
@@ -154,7 +154,7 @@ if( DEV_PKG )
 #    			       VERSION ${major_version}.${minor_version}.${patch_level}
 # 	)
 # 	target_include_directories( e2sim_static PUBLIC "src/DEF" "src/SCTP" "src/messagerouting" "src/base" "src/encoding" "src/ASN1c")	
-# 	# target_include_directories( e2sim_static PUBLIC "src/DEF" "src/SCTP" "src/messagerouting" "src/base" "src/encoding" "src/ASN1c" "src/handover_ric_control")	
+# 	# target_include_directories( e2sim_static PUBLIC "src/DEF" "src/SCTP" "src/messagerouting" "src/base" "src/encoding" "src/ASN1c" "src/xapp_ric_control")	
 
 # 	message("Inserting the header directoryy /usr/local/${install_inc}")
 # 	target_include_directories(e2sim_static PUBLIC "/usr/local/${install_inc}")

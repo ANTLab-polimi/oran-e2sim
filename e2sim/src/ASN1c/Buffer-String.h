@@ -22,7 +22,7 @@ extern "C" {
 typedef OCTET_STRING_t	 Buffer_String_t;
 
 /* Implementation */
-extern asn_per_constraints_t asn_PER_type_Buffer_String_constr_1;
+// extern asn_per_constraints_t asn_PER_type_Buffer_String_constr_1;
 extern asn_TYPE_descriptor_t asn_DEF_Buffer_String;
 asn_struct_free_f Buffer_String_free;
 asn_struct_print_f Buffer_String_print;

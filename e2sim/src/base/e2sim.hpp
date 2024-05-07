@@ -56,6 +56,8 @@ public:
 
   void test_return_msg();
 
+  void test_buffer_msg();
+
   // char *timestamp_local();
 
 private:

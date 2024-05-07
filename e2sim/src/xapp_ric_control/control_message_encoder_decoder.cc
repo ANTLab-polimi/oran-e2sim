@@ -16,6 +16,11 @@ extern "C" {
 #include "RICindication.h"
 #include "InitiatingMessage.h"
 #include "ProtocolIE-Field.h"
+
+#include "V2X-Scheduling-All-Users.h"
+#include "V2X-Scheduling-Item.h"
+#include "V2X-Scheduling-User.h"
+#include "V2X-Scheduling-Source.h"
 }
 
 #include "tinyxml2.h"
@@ -190,6 +195,42 @@ encoding::extract_handover_map(AllHandoversList_t* pdu){
     }
 
     return allHandovers;
+}
+
+std::map<long, std::map<long, encoding::dest_sched_t>>
+encoding::extract_scheduling_map(V2X_Scheduling_All_Users_t* v2XSchedulingAllUsersList){
+    std::map<long, std::map<long, encoding::dest_sched_t>> allUsersScheduling;
+    
+    for(int sourceIdx = 0; sourceIdx < v2XSchedulingAllUsersList->list.count; ++sourceIdx){
+        V2X_Scheduling_Source_t* sourceUserScheduling = (V2X_Scheduling_Source_t*)v2XSchedulingAllUsersList->list.array[sourceIdx];
+        long sourceNodeId = (long)sourceUserScheduling->v2xNodeId;
+        std::map<long, encoding::dest_sched_t> sourceStruct;
+        for(int destIdx = 0; destIdx < sourceUserScheduling->V2X_Scheduling_DestinationList.list.count; ++destIdx){
+            V2X_Scheduling_User_t* singleUserScheduling = (V2X_Scheduling_User_t*)sourceUserScheduling->V2X_Scheduling_DestinationList.list.array[destIdx];
+            encoding::dest_sched_t dest_sched_struct = encoding::dest_sched_t();
+            // dest_sched_struct.v2xNodeId = (long)singleUserScheduling->v2xNodeId;
+            dest_sched_struct.cReselectionCounter = (long)singleUserScheduling->cReselectionCounter;
+            dest_sched_struct.slResourceReselectionCounter = (long)singleUserScheduling->slResourceReselectionCounter;
+            dest_sched_struct.prevSlResoReselCounter = (long)singleUserScheduling->prevSlResoReselCounter;
+            dest_sched_struct.nrSlHarqId = (long)singleUserScheduling->nrSlHarqId;
+            dest_sched_struct.nSelected = (long)singleUserScheduling->nSelected;
+            dest_sched_struct.tbTxCounter = (long)singleUserScheduling->tbTxCounter;
+            // std::vector<sctp_buffer_t> singleUserAllocations;
+            for(int userSchedulingIdx = 0; userSchedulingIdx < singleUserScheduling->V2X_Scheduling_ItemList.list.count; ++userSchedulingIdx){
+                V2X_Scheduling_Item_t* schedItem = (V2X_Scheduling_Item_t*)singleUserScheduling->V2X_Scheduling_ItemList.list.array[userSchedulingIdx];
+                // sctp_buffer_t* data = (sctp_buffer_t *) calloc(1, sizeof(sctp_buffer_t));
+                encoding::sctp_buffer_t data = encoding::sctp_buffer_t();
+                data.buffer = (uint8_t *) calloc(1, schedItem->nrSlotAllocBuffer.size);
+                data.length = (int)schedItem->nrSlotAllocBuffer.size;
+                memcpy(data.buffer, schedItem->nrSlotAllocBuffer.buf, std::min((int)schedItem->nrSlotAllocBuffer.size, MAX_SCTP_BUFFER_CTRL));
+                // memcpy (data.buffer, schedItem->nrSlotAllocBuffer.buf, schedItem->nrSlotAllocBuffer.size);
+                dest_sched_struct.singleUserAllocations.push_back(data);
+            }
+            sourceStruct.insert(std::pair<long, encoding::dest_sched_t>((long)singleUserScheduling->v2xNodeId, dest_sched_struct));
+        }
+        allUsersScheduling.insert(std::pair<long, std::map<long, encoding::dest_sched_t>>(sourceNodeId, sourceStruct));
+    }
+    return allUsersScheduling;
 }
 
 std::map<long, std::map<long, long>> 
