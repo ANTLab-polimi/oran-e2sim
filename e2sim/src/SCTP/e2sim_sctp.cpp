@@ -165,9 +165,26 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
     exit(EXIT_FAILURE);
   }
   // modified
-  int sendbuff = 2097152;
+  int send_buff;
+  socklen_t send_buff_len = sizeof(int);
+  if(getsockopt(client_fd, SOL_SOCKET, SO_SNDBUF, (char*)&send_buff, &send_buff_len)!=0){
+    LOG_I("socket SO_SNDBUF=%d\n", send_buff);
+  }
+
+  int sendbuff = 4097152;
   if (setsockopt(client_fd, SOL_SOCKET, SO_SNDBUF, &sendbuff, sizeof(sendbuff)) != 0) {
     LOG_E("socket SO_SNDBUF=%d\n", sendbuff);
+    exit(EXIT_FAILURE);
+  }
+
+  int recv_buff;
+  socklen_t recv_buff_len = sizeof(int);
+  if(getsockopt(client_fd, SOL_SOCKET, SO_SNDBUF, (char*)&recv_buff, &recv_buff_len)!=0){
+    LOG_I("socket SO_RCVBUF=%d\n", recv_buff);
+  }
+  int recvbuff = 4097152;
+  if (setsockopt(client_fd, SOL_SOCKET, SO_RCVBUF, &recvbuff, sizeof(recvbuff)) != 0) {
+    LOG_E("socket SO_RCVBUF=%d\n", recvbuff);
     exit(EXIT_FAILURE);
   }
   // end modification
