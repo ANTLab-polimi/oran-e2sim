@@ -148,13 +148,10 @@ void E2Sim::encode_and_send_sctp_data(E2AP_PDU_t* pdu)
   //           {
   //             // std::cout << "enc 3" << std::endl;
   //               int payload_size = ie->value.choice.RICindicationMessage.size;
-
   //               char* payload = (char*) calloc(payload_size, sizeof(char));
   //               memcpy(payload, ie->value.choice.RICindicationMessage.buf, payload_size);
-
   //               E2SM_KPM_IndicationMessage_t *descriptor = 0;
   //               auto retvalMsgKpm = asn_decode(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_KPM_IndicationMessage, (void **) &descriptor, payload, payload_size);
-                
   //               // std::cout << "priting the ind msg" << std::endl;
   //               // xer_fprint(stdout, &asn_DEF_E2SM_KPM_IndicationMessage, descriptor);
   //               free(payload);
@@ -188,6 +185,7 @@ void E2Sim::encode_and_send_sctp_data(E2AP_PDU_t* pdu)
   // Asume we receive the same report all the tine
   // test_return_msg();
   // test_buffer_msg();
+  delete buf;
 }
 
 void E2Sim::wait_for_sctp_data()
