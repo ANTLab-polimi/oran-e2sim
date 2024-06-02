@@ -18,7 +18,7 @@ extern "C" {
 #include "V2X-Scheduling-All-Users.h" 
 }
 
-#define MAX_SCTP_BUFFER_CTRL     10000
+#define MAX_SCTP_BUFFER_CTRL     50000
 
 // namespace ns3{
 namespace encoding {
