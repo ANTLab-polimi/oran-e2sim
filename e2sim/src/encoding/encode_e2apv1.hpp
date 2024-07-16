@@ -65,6 +65,8 @@ namespace encoding {
   int e2ap_asn1c_encode_pdu_test(E2AP_PDU_t* pdu, unsigned char **buffer);
 
   struct asn_dec_rval_s e2ap_asn1c_decode_pdu_test(E2AP_PDU_t *pdu, enum asn_transfer_syntax syntax, unsigned char *buffer, int len);
+
+  void free_memory_ric_control_acknowledge(E2AP_PDU_t *control_resp_pdu);
 }
 
 #endif

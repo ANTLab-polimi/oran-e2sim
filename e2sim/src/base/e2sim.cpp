@@ -138,8 +138,7 @@ void E2Sim::encode_and_send_sctp_data(E2AP_PDU_t* pdu)
   //   RICindication_t* ricIndication = &initMsg->value.choice.RICindication;
   //   // xer_fprint(stdout, &asn_DEF_RICindication, ricIndication);
   //   for (uint8_t idx = 0; idx < ricIndication->protocolIEs.list.count; idx++)
-  //   {
-      
+  //   {  
   //       RICindication_IEs *ie = ricIndication->protocolIEs.list.array [idx];
   //       // std::cout << "enc 2 " << ie->id << std::endl;
   //       switch(ie->value.present)
@@ -170,13 +169,13 @@ void E2Sim::encode_and_send_sctp_data(E2AP_PDU_t* pdu)
   int sent_size = sctp_send_data(client_fd, data);
   
 
-  char printBuffer[40960]{};
-  char *tmp = printBuffer;
-  for (size_t i = 0; i < (size_t)data.len; ++i) {
-      snprintf(tmp, 3, "%02x", data.buffer[i]);
-      tmp += 2;
-  }
-  printBuffer[data.len] = 0;
+  // char printBuffer[40960]{};
+  // char *tmp = printBuffer;
+  // for (size_t i = 0; i < (size_t)data.len; ++i) {
+  //     snprintf(tmp, 3, "%02x", data.buffer[i]);
+  //     tmp += 2;
+  // }
+  // printBuffer[data.len] = 0;
 
   LOG_I("Send data to xapp with client id %d with data size %d and final size %d", client_fd, data.len, sent_size);
   
@@ -185,7 +184,9 @@ void E2Sim::encode_and_send_sctp_data(E2AP_PDU_t* pdu)
   // Asume we receive the same report all the tine
   // test_return_msg();
   // test_buffer_msg();
-  delete buf;
+  ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, pdu);
+  // delete buf;
+  free(buf);
 }
 
 void E2Sim::wait_for_sctp_data()
@@ -263,6 +264,8 @@ int E2Sim::run_loop(std::string server_ip, uint16_t server_port, uint16_t local_
     auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_setup, data_buf.buffer, MAX_SCTP_BUFFER);
 
     data_buf.len = er.encoded;
+    ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, pdu_setup);
+    free(pdu_setup);
 
     if(sctp_send_data(client_fd, data_buf) > 0) {
         LOG_I("[SCTP] Sent E2-SETUP-REQUEST");

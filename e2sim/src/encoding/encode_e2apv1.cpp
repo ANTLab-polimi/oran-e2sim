@@ -292,6 +292,18 @@ void encoding::generate_e2apv1_ric_control_acknowledge(E2AP_PDU_t *control_resp_
     control_resp_pdu->choice.successfulOutcome = successOutcome;
 }
 
+void encoding::free_memory_ric_control_acknowledge(E2AP_PDU_t *control_resp_pdu){
+    if (control_resp_pdu->present == E2AP_PDU_PR_successfulOutcome){
+        SuccessfulOutcome_t * successOutcome = control_resp_pdu->choice.successfulOutcome;
+        if (successOutcome != nullptr){
+            RICcontrolAcknowledge_t* riCcontrolAcknowledge = &successOutcome->value.choice.RICcontrolAcknowledge;
+            for (auto *ie = (RICcontrolAcknowledge_IEs*) riCcontrolAcknowledge->protocolIEs.list.array; ie != nullptr; ie++) {
+                free(ie);
+            }
+        }
+    }
+}
+
 void encoding::generate_e2apv1_setup_response(E2AP_PDU_t *e2ap_pdu) {
 
     auto *resp_ies1 = (E2setupResponseIEs_t *) calloc(1, sizeof(E2setupResponseIEs_t));

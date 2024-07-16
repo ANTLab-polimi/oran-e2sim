@@ -281,6 +281,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
             break;
     }
 
+    ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, pdu);
     free(pdu);
 }
 
@@ -326,6 +327,8 @@ void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim
     } else {
         LOG_E("[SCTP] Unable to send E2-SERVICE-UPDATE to peer");
     }
+    // free_memory_ric_control_acknowledge(res_pdu);
+    ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, res_pdu);
     free(res_pdu);
 }
 
